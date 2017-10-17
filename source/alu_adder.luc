@@ -42,5 +42,6 @@ sig sumOut [8];
     v = (a[7]&xb[7]&~sumOut[7])|(!a[7]&~xb[7]&sumOut[7]); 
     //instead of this, we can check if sumOut is more than 8 bits long
     //might not work if the 9th bit would be a 0, would have to compare the initial MSB.
+    // IN OVERFLOWS IT'S ALWAYS 9TH BIT == 1 (until proven otherwise)
   }
 }
