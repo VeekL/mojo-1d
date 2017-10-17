@@ -1,0 +1,26 @@
+module alu_boolean (
+    input clk,  // clock
+    input rst,  // reset
+    output out,
+    input a[8], 
+    input b[8],
+    input alu_fn[4],
+    output boole[8]
+  ) {
+
+  always {
+    out = 0;
+    boole = 8b0;
+    //maybe we could include more functions like nand xor etc
+    if(alu_fn == b1000) boole = a&b;      //and
+    else if(alu_fn == b1110) boole = a|b; //or
+    else if(alu_fn == b0110) boole = a^b; //xor
+    else if(alu_fn == b1010) boole = a;   //a
+/*    
+    //the inputs follow the truth table of each function.
+    else if(alu_fn == b0101) boole = b; //b
+    else if(alu_fn == b0111) boole = ~(a&b); //nand
+    else if(alu_fn == b0001) boole = ~(a|b); //nor
+*/
+  }
+}

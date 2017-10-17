@@ -1,0 +1,18 @@
+module alu_shifter (
+    input clk,  // clock
+    input rst,  // reset
+    output out,
+    input a[8],
+    input b[3],
+    input alu_fn[2],
+    output shifted[8]
+  ) {
+
+  always {
+    out = 0;
+    shifted = 8b0;
+    if(alu_fn[0] == 0) shifted = a << b; //does this work? i heard this works
+    else if(alu_fn == b10) shifted = a >> b;
+    else if(alu_fn == b11) shifted = a >>> b;
+  }
+}

@@ -1,0 +1,21 @@
+module alu_comparator (
+    input clk,  // clock
+    input rst,  // reset
+    output out,
+    input z,
+    input v,
+    input n,
+    input alu_fn [2],
+    output compared
+  ) {
+
+  always {
+    out = 0;
+    if(alu_fn == b01) compared = z;
+    else if(alu_fn == b10) compared = n^v;
+    else if(alu_fn == b11) compared = z|(n^v); //it's just what we did in lab3
+    else{
+      compared = 0;
+    }
+  }
+}
