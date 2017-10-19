@@ -11,7 +11,7 @@ module alu_combined (
     output alu[8],
     output error
   ) {
-  .a(a){
+  .a(a),.alu_fn(alu_fn[3:0]){
     .b(b){
     alu_adder adder;
     alu_boolean boolean;
@@ -24,11 +24,7 @@ module alu_combined (
   always {
     out = 0;
     error = 0;
-    adder.alu_fn = alu_fn[3:0];
-    boolean.alu_fn = alu_fn[3:0];
     shifter.b = b[2:0];
-    shifter.alu_fn = alu_fn[3:0]; //can rearrange the alu_fn to group all together
-    comparator.alu_fn = alu_fn[3:0];
     z = 0;
     v = 0;
     n = 0;

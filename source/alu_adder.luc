@@ -25,14 +25,6 @@ sig sumOut [8];
       sumOut = a*b;
     }
     else error = 1;
-/*
-    if(alu_fn == b01){ //subtract
-      sumOut = a+(~b+1);
-    }
-    else if(alu_fn == b00){ //add
-      sumOut = a+b;
-    }
-*/
     calculated_output = sumOut;
     
     if(sumOut == 0) z = 1;
@@ -40,7 +32,6 @@ sig sumOut [8];
     n = sumOut[7];
     v = (a[7]&xb[7]&~sumOut[7])|(!a[7]&~xb[7]&sumOut[7]); 
     //instead of this, we can check if sumOut is more than 8 bits long
-    //might not work if the 9th bit would be a 0, would have to compare the initial MSB.
-    // IN OVERFLOWS IT'S ALWAYS 9TH BIT == 1 (until proven otherwise)
+    //9th bit should be a 1 if it overflows
   }
 }

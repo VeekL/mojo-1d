@@ -14,12 +14,13 @@ module alu_boolean (
     else if(alu_fn == b1110) boole = a|b; //or
     else if(alu_fn == b0110) boole = a^b; //xor
     else if(alu_fn == b1010) boole = a;   //a
-    else error = 1;
-/*    
+
+
     //the inputs follow the truth table of each function.
     else if(alu_fn == b0101) boole = b; //b
     else if(alu_fn == b0111) boole = ~(a&b); //nand
     else if(alu_fn == b0001) boole = ~(a|b); //nor
-*/
+    
+    else error = 1;
   }
 }

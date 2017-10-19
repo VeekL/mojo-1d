@@ -11,7 +11,7 @@ module alu_shifter (
     shifted = 8b0;
     if(alu_fn == 0) shifted = a << b; 
     else if(alu_fn == b01) shifted = a >> b;
-    else if(alu_fn == b11) shifted = $signed(a) >>> b; //trying to use shift right arithmetric
+    else if(alu_fn == b11) shifted = $signed(a) >>> b; //built-in function for shift right arithmetic
     else error = 1;
   }
 }

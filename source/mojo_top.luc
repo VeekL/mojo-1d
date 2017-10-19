@@ -27,10 +27,9 @@ module mojo_top (
     .rst(rst){  //clock and rst not really required in each individual Source.
       alu_combined alu;
       alu_auto_tester auto_test;
+      counter clock;
     }
-  }
-  
-  
+  }  
   always {
     reset_cond.in = ~rst_n; // input raw inverted reset signal
     rst = reset_cond.out;   // conditioned reset
@@ -46,27 +45,22 @@ module mojo_top (
     io_sel = 4hf;           // select no digits
 
     //manual testing using alu_combined
-    alu.a = io_dip[0];
-    alu.b = io_dip[1];
+    alu.a = io_dip[1];
+    alu.b = io_dip[0];
     alu.alu_fn = io_dip[2][5:0];
-    io_led[2] = alu.alu;
+    io_led[2] = alu.alu; //8 bit output of function
     io_led[1][2] = alu.z;
     io_led[1][1] = alu.v;
     io_led[1][0] = alu.n;
-    io_led[1][7] = alu.error;
+    io_led[1][7] = alu.error; //if this led lights up it's an unknown alu_fn
     //7 segment showing what alu_fn you're on? Add/Bool/CPr/ShF
-    //error code for invalid alu_fn input
-    
-    
-    //TODO: code for manual and automatic testing.
-    //automatic testing is a clock, and coded testcases 
-    //
-    //manual testing requires io_dip for alufn and a and b
-    //io_led should reflect output, z, v, n; no need for error
-    
-    led[3:0] = auto_test.correct_led;
-    io_led[0] = auto_test.progress_led;
-    
-    
+    //error code for invalid alu_fn input?
+  //  auto_test.step = 0;
+ //   if(clock.clock == 1){
+      auto_test.step = 1;
+      led[3:0] = auto_test.correct;
+      io_led[0] = auto_test.progress;
+//    }
+
   }
 }
