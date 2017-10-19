@@ -1,6 +1,4 @@
 module alu_comparator (
-    input clk,  // clock
-    input rst,  // reset
     output out,
     input z,
     input v,

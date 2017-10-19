@@ -1,0 +1,51 @@
+module alu_combined (
+    input clk,  // clock
+    input rst,  // reset
+    output out,
+    input a[8], 
+    input b[8],
+    input alu_fn[6],
+    output z,
+    output v,
+    output n,
+    output alu[8]
+  ) {
+.a(a){
+  .b(b){
+  alu_adder adder;
+  alu_boolean boolean;
+  }
+  alu_shifter shifter;
+}
+alu_comparator comparator;
+  
+  always {
+    out = 0;
+    adder.alu_fn = alu_fn[1:0];
+    boolean.alu_fn = alu_fn[3:0];
+    shifter.b = b[2:0];
+    shifter.alu_fn = alu_fn[1:0];
+    comparator.z = adder.z;
+    comparator.v = adder.v;
+    comparator.n = adder.n;
+    comparator.alu_fn = alu_fn[2:1];
+    
+    z = adder.z;
+    v = adder.v;
+    n = adder.n;
+    
+    alu = 8b0;
+    
+    case (alu_fn[5:4]){
+      b00:
+        alu = adder.calculated_output;
+      b01:
+        alu = boolean.boole;
+      b10:
+        alu = shifter.shifted;
+      b11:
+        alu = comparator.compared;
+    }
+    
+  }
+}

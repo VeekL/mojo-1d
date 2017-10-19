@@ -3,6 +3,7 @@
   <files>
     <src>alu_shifter.luc</src>
     <src>alu_comparator.luc</src>
+    <src>alu_combined.luc</src>
     <src>alu_boolean.luc</src>
     <src top="true">mojo_top.luc</src>
     <src>alu_adder.luc</src>

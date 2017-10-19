@@ -25,14 +25,13 @@ module mojo_top (
     // clock. This ensures the entire FPGA comes out of reset at the same time.
     reset_conditioner reset_cond;
     .rst(rst){  //clock and rst not really required in each individual Source.
-      alu_adder addertest;
-      alu_adder addertest2;
-      alu_adder addertest3; 
+      alu_combined alu;
     }
   }
   sig alu_fn[6];
   sig a[8];
   sig b[8];
+  
   
   always {
     reset_cond.in = ~rst_n; // input raw inverted reset signal
@@ -48,24 +47,21 @@ module mojo_top (
     io_sel = 4hf;           // select no digits
     
     
-    alu_fn = io_dip[2][0+:5];
+    alu_fn = io_dip[2][5:0];
     a = io_dip[0];
-    b = io_dip[1]; 
+    b = io_dip[1];
     
-    addertest.a = 8b0;
-    addertest.b = b01010101;
-    addertest.alu_fn = b01;
-    io_led[0] = addertest.calculated_output;
+    alu.a = io_dip[0];
+    alu.b = io_dip[1];
+    alu.alu_fn = io_dip[2][5:0];
+    io_led[2] = alu.alu;
+    //7 segment showing what alu_fn you're on? Add/Bool/CPr/ShF
     
-    addertest2.a = 8x{1};
-    addertest2.b = 8b0;
-    addertest2.alu_fn = b01;
-    io_led[1] = addertest2.calculated_output;
-    
-    addertest3.a = 8x{1};
-    addertest3.b = 8x{1};
-    addertest3.alu_fn = b00;
-    io_led[2] = addertest3.calculated_output;
+    //TODO: code for manual and automatic testing.
+    //automatic testing is a clock, and coded testcases 
+    //
+    //manual testing requires io_dip for alufn and a and b
+    //io_led should reflect output, z, v, n; no need for error
     
     
   }

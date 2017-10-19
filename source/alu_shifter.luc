@@ -1,6 +1,4 @@
 module alu_shifter (
-    input clk,  // clock
-    input rst,  // reset
     output out,
     input a[8],
     input b[3],
