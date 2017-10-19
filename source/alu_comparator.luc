@@ -1,19 +1,21 @@
 module alu_comparator (
-    output out,
-    input z,
-    input v,
-    input n,
-    input alu_fn [2],
+    output error,
+    input a [8], 
+    input b [8], 
+    input alu_fn [4],
     output compared
   ) {
+  alu_adder adder(.a(a),.b(b));
 
   always {
-    out = 0;
-    if(alu_fn == b01) compared = z;
-    else if(alu_fn == b10) compared = n^v;
-    else if(alu_fn == b11) compared = z|(n^v); //it's just what we did in lab3
+    error = 0;
+    adder.alu_fn = 0001;
+    if(alu_fn == b0011) compared = adder.z;
+    else if(alu_fn == b0101) compared = adder.n^adder.v; // | and ^ are bitwise operators for OR and XOR 
+    else if(alu_fn == b0111) compared = adder.z|(adder.n^adder.v); 
     else{
       compared = 0;
+      error = 1;
     }
   }
 }

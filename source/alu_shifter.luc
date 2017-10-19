@@ -1,16 +1,17 @@
 module alu_shifter (
-    output out,
+    output error,
     input a[8],
     input b[3],
-    input alu_fn[2],
+    input alu_fn[4],
     output shifted[8]
   ) {
 
   always {
-    out = 0;
+    error = 0;
     shifted = 8b0;
-    if(alu_fn[0] == 0) shifted = a << b; //does this work? i heard this works
-    else if(alu_fn == b10) shifted = a >> b;
-    else if(alu_fn == b11) shifted = a >>> b;
+    if(alu_fn == 0) shifted = a << b; 
+    else if(alu_fn == b01) shifted = a >> b;
+    else if(alu_fn == b11) shifted = $signed(a) >>> b; //trying to use shift right arithmetric
+    else error = 1;
   }
 }

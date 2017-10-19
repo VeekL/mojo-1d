@@ -1,9 +1,9 @@
 module alu_adder (
-    output out,    
+    output error,    
     input a [8], 
     input b [8], 
     output calculated_output [8], 
-    input alu_fn [2],
+    input alu_fn[4],
     output z,
     output v,
     output n
@@ -13,17 +13,18 @@ sig xb [8];
 sig sumOut [8];
 
   always {
+    error = 0;
     // a[7] and b[7] are the signed bits
-    out = 0; 
     sumOut = 8b0;
     xb = (32x{alu_fn[0]})^b;
     
-    if(alu_fn[1] == 0){
+    if(alu_fn[3:1] == 0){
       sumOut = a+xb+alu_fn[0];    
     }
     else if(alu_fn == b10){   //multiply??
       sumOut = a*b;
-    } 
+    }
+    else error = 1;
 /*
     if(alu_fn == b01){ //subtract
       sumOut = a+(~b+1);

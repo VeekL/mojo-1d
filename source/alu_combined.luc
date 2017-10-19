@@ -8,43 +8,50 @@ module alu_combined (
     output z,
     output v,
     output n,
-    output alu[8]
+    output alu[8],
+    output error
   ) {
-.a(a){
-  .b(b){
-  alu_adder adder;
-  alu_boolean boolean;
+  .a(a){
+    .b(b){
+    alu_adder adder;
+    alu_boolean boolean;
+    alu_comparator comparator;
+    }
+    alu_shifter shifter;
   }
-  alu_shifter shifter;
-}
-alu_comparator comparator;
+
   
   always {
     out = 0;
-    adder.alu_fn = alu_fn[1:0];
+    error = 0;
+    adder.alu_fn = alu_fn[3:0];
     boolean.alu_fn = alu_fn[3:0];
     shifter.b = b[2:0];
-    shifter.alu_fn = alu_fn[1:0];
-    comparator.z = adder.z;
-    comparator.v = adder.v;
-    comparator.n = adder.n;
-    comparator.alu_fn = alu_fn[2:1];
-    
-    z = adder.z;
-    v = adder.v;
-    n = adder.n;
-    
+    shifter.alu_fn = alu_fn[3:0]; //can rearrange the alu_fn to group all together
+    comparator.alu_fn = alu_fn[3:0];
+    z = 0;
+    v = 0;
+    n = 0;
+
     alu = 8b0;
     
     case (alu_fn[5:4]){
       b00:
         alu = adder.calculated_output;
+        error = adder.error;
+        z = adder.z;
+        v = adder.v;
+        n = adder.n;
+    
       b01:
         alu = boolean.boole;
+        error = boolean.error;
       b10:
         alu = shifter.shifted;
+        error = shifter.error;
       b11:
         alu = comparator.compared;
+        error = comparator.error;
     }
     
   }
