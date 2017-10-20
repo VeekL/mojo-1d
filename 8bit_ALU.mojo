@@ -2,8 +2,8 @@
 <project name="8bit_ALU" board="Mojo V3" language="Lucid">
   <files>
     <src>alu_shifter.luc</src>
-    <src>alu_auto_tester.luc</src>
     <src>alu_comparator.luc</src>
+    <src>alu_auto_tester.luc</src>
     <src>alu_combined.luc</src>
     <src>alu_boolean.luc</src>
     <src top="true">mojo_top.luc</src>

@@ -14,7 +14,7 @@ module alu_auto_tester (
   sig zvn[3];
   sig alu[8];
   .clk(clk),.rst(rst){
-    fsm state = {ADDER1, ADDER2, ADDER3, ADDER4, ADDER5, ADDER6, BOOLEAN1, BOOLEAN2, BOOLEAN3, SHIFTER1, SHIFTER2, SHIFTER3, COMPARATOR1, COMPARATOR2, COMPARATOR3, COMPLETE};
+    fsm state = {ADDER1, ADDER2, ADDER3, ADDER4, ADDER5, ADDER6, ADDER7, BOOLEAN1, BOOLEAN2, BOOLEAN3, BOOLEAN4, BOOLEAN5, SHIFTER1, SHIFTER2, SHIFTER3, COMPARATOR1, COMPARATOR2, COMPARATOR3, COMPARATOR4, COMPLETE};
     alu_combined test_alu;
     counter clock;
   }
@@ -34,7 +34,7 @@ module alu_auto_tester (
 //     if(step == 1){
     //if(clock.clock == 1){
       case(state.q){
-        state.ADDER1:
+        state.ADDER1:  //add
           progress = 8b0;
           correct = 4b0;
           test_alu.alu_fn = 0;
@@ -74,7 +74,7 @@ module alu_auto_tester (
             if(test_alu.v == 1 & test_alu.z == 0 & test_alu.n == 1 & test_alu.alu == 8b10000111) state.d = state.ADDER5;
             else state.d = state.ADDER4;
           }
-        state.ADDER5:
+        state.ADDER5:  //subtract
           progress = 8b1111;
           correct = 4b0;
           test_alu.a = 8b1000;
@@ -91,15 +91,25 @@ module alu_auto_tester (
           test_alu.alu_fn = 1;
           test_alu.b = 8b01;
           if(clock.clock == 1){
-            if(test_alu.v == 1 & test_alu.z == 0 & test_alu.n == 0 & test_alu.alu == c{0,7x{1}}) state.d = state.BOOLEAN1;
+            if(test_alu.v == 1 & test_alu.z == 0 & test_alu.n == 0 & test_alu.alu == c{0,7x{1}}) state.d = state.ADDER7;
             else state.d = state.ADDER6;
+          }
+        state.ADDER7:   //test multiply
+          progress = 8b111111;
+          correct = 4b0;
+          test_alu.a = 8b00000100;
+          test_alu.alu_fn = b10;
+          test_alu.b = 8b11;
+          if(clock.clock == 1){
+            if(test_alu.v == 0 & test_alu.z == 0 & test_alu.n == 0 & test_alu.alu == b00001100) state.d = state.BOOLEAN1;
+            else state.d = state.ADDER7;
           }
         state.BOOLEAN1:
           progress = 8b0;
           correct = 4b1;
           test_alu.a = b00001101;
           test_alu.b = b10011000;
-          test_alu.alu_fn = b011000;
+          test_alu.alu_fn = b011000; //and
           if(clock.clock == 1){
             if(test_alu.alu == b00001000) state.d = state.BOOLEAN2;
             else state.d = state.BOOLEAN1;
@@ -109,7 +119,7 @@ module alu_auto_tester (
           correct = 4b1;
           test_alu.a = b00001101;
           test_alu.b = b10011000;
-          test_alu.alu_fn = b011110;
+          test_alu.alu_fn = b011110; //or
           if(clock.clock == 1){
             if(test_alu.alu == b10011101) state.d = state.BOOLEAN3;
             else state.d = state.BOOLEAN2;
@@ -119,17 +129,37 @@ module alu_auto_tester (
           correct = 4b1;
           test_alu.a = b00001101;
           test_alu.b = b10011000;
-          test_alu.alu_fn = b010110;
+          test_alu.alu_fn = b010110; //xor
           if(clock.clock == 1){
-            if(test_alu.alu == b10010101) state.d = state.SHIFTER1;//test nor nand and other circuits[1] = 1;
+            if(test_alu.alu == b10010101) state.d = state.BOOLEAN4;
             else state.d = state.BOOLEAN3;
+          }
+        state.BOOLEAN4:
+          progress = 8b111;
+          correct = 4b1;
+          test_alu.a = b00001101;
+          test_alu.b = b10011000;
+          test_alu.alu_fn = b011010; //a
+          if(clock.clock == 1){
+            if(test_alu.alu == b00001101) state.d = state.BOOLEAN5;//test nor nand and other circuits[1] = 1;
+            else state.d = state.BOOLEAN4;
+          }
+        state.BOOLEAN5:
+          progress = 8b1111;
+          correct = 4b1;
+          test_alu.a = b00001101;
+          test_alu.b = b10011000;
+          test_alu.alu_fn = b010111; //nand
+          if(clock.clock == 1){
+            if(test_alu.alu == b11110111) state.d = state.SHIFTER1;//test nor nand and other circuits[1] = 1;
+            else state.d = state.BOOLEAN5;
           }
         state.SHIFTER1:
           progress = 8b0;
           correct = 4b11;
           test_alu.a = b11010101;
-          test_alu.b = 8b011; //shifts by 3
-          test_alu.alu_fn = b100000;
+          test_alu.b = 8b011; //shifts left by 3
+          test_alu.alu_fn = b100000; 
           if(clock.clock == 1){
             if(test_alu.alu == b10101000) state.d = state.SHIFTER2;
             else state.d = state.SHIFTER1;
@@ -139,7 +169,7 @@ module alu_auto_tester (
           correct = 4b11;
           test_alu.a = b11010101;
           test_alu.b = 8b011;
-          test_alu.alu_fn = b100001;
+          test_alu.alu_fn = b100001; //shift right 3
           if(clock.clock == 1){
             if(test_alu.alu == b00011010) state.d = state.SHIFTER3;
             else state.d = state.SHIFTER2;
@@ -149,7 +179,7 @@ module alu_auto_tester (
           correct = 4b11;
           test_alu.a = b11010101;
           test_alu.b = 8b011;
-          test_alu.alu_fn = b100011;
+          test_alu.alu_fn = b100011; //shift right arithmetric 3
           if(clock.clock == 1){
             if(test_alu.alu == b11111010) state.d = state.COMPARATOR1;
             else state.d = state.SHIFTER3;
@@ -159,7 +189,7 @@ module alu_auto_tester (
           correct = 4b111;
           test_alu.a = b00001101;
           test_alu.b = b10011000;
-          test_alu.alu_fn = b110011;
+          test_alu.alu_fn = b110011; //equal
           if(clock.clock == 1){
             if(test_alu.alu[0] == 0) state.d = state.COMPARATOR2;
             else state.d = state.COMPARATOR1;
@@ -169,7 +199,7 @@ module alu_auto_tester (
           correct = 4b111;
           test_alu.a = b00001101;
           test_alu.b = b10011000;
-          test_alu.alu_fn = b110101;
+          test_alu.alu_fn = b110101; //lessthan
           if(clock.clock == 1){
             if(test_alu.alu[0] == 0) state.d = state.COMPARATOR3;
             else state.d = state.COMPARATOR2;
@@ -179,10 +209,20 @@ module alu_auto_tester (
           correct = 4b111;
           test_alu.a = b00001101;
           test_alu.b = b10011000;
-          test_alu.alu_fn = b110111;
+          test_alu.alu_fn = b110111; //lessthan equals
           if(clock.clock == 1){
-            if(test_alu.alu[0] == 0) state.d = state.COMPLETE;
+            if(test_alu.alu[0] == 0) state.d = state.COMPARATOR4;
             else state.d = state.COMPARATOR3;
+          }
+        state.COMPARATOR4:
+          progress = 8b0;
+          correct = 4b111;
+          test_alu.a = b10011000;
+          test_alu.b = b10011000;
+          test_alu.alu_fn = b110011; //equal
+          if(clock.clock == 1){
+            if(test_alu.alu[0] == 1) state.d = state.COMPLETE;
+            else state.d = state.COMPARATOR4;
           }
         state.COMPLETE:
           correct = b1111;
